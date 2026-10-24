@@ -1,5 +1,5 @@
 /* Privacy-friendly beacon: no cookies, no localStorage, nothing stored client-side.
-   Sends {s: slug, e: event, p?: pct, src?, v?} as text/plain JSON to the Worker /event. Disabled when beacon_endpoint is empty.
+   Sends {s: slug, e: event, p?: pct, src?, v?, l?: page language de|en} as text/plain JSON to the Worker /event. Disabled when beacon_endpoint is empty.
    src = mail id from ?e=E1|E2|E3, v = subject-test variant from ?v=A|B|C (both come from the link in the email).
    Events: view (page_view), engaged (first scroll/click/key/touch: separates people from mail scanners), details_view, click_assess*,
    video_play, video_pct (25/50/75/100 via Bunny's player.js protocol). */
@@ -10,7 +10,7 @@
   var src = (qs.get("e") || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 8);
   var variant = (qs.get("v") || "").replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase();
   function send(ev, pct) {
-    var o = { s: cfg.slug, e: ev, t: Math.floor(Date.now() / 60000), src: src, v: variant };
+    var o = { s: cfg.slug, e: ev, t: Math.floor(Date.now() / 60000), src: src, v: variant, l: cfg.lang || "" };
     if (pct) o.p = pct;
     var body = JSON.stringify(o);
     try {

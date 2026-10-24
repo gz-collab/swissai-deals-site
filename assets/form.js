@@ -15,34 +15,36 @@
     var v = (new URLSearchParams(location.search).get("v") || "").replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase();
     if (v) { var hv = document.createElement("input"); hv.type = "hidden"; hv.name = "variant"; hv.value = v; f.appendChild(hv); }
   }
+  var LAND = window.__LANDING__ || {}, M = LAND.msg || {};
+  function m(key, fallback) { return M[key] || fallback; } // texts come from the page (German or English); English fallbacks keep old pages working
   function fail(msg) { st.className = "err"; st.textContent = msg; }
   f.addEventListener("submit", function (ev) {
     ev.preventDefault();
     var ep = f.getAttribute("action") || "";
-    if (!/^https?:\/\//.test(ep)) return fail("The form is not connected yet (test build).");
+    if (!/^https?:\/\//.test(ep)) return fail(m("not_connected", "The form is not connected yet (test build)."));
     if (f.querySelector('[name="website"]').value) return; // honeypot
     var btn = f.querySelector('button[type="submit"]');
     if (btn) btn.disabled = true;
-    st.className = ""; st.textContent = "Sending...";
+    st.className = ""; st.textContent = m("sending", "Sending...");
     fetch(ep, { method: "POST", body: new FormData(f), headers: { Accept: "application/json" } })
       .then(function (r) {
         if (r.ok) {
           f.reset(); st.className = "ok";
           st.textContent = kind === "details"
-            ? "Thank you. We have received your answers and just sent you an email with a link to book your free call."
-            : "Thank you. Please check your inbox: we have sent you a link to a short questionnaire.";
+            ? m("ok_details", "Thank you. We have received your answers and just sent you an email with a link to book your free call.")
+            : m("ok_simple", "Thank you. Please check your inbox: we have sent you a link to a short questionnaire.");
           return;
         }
         if (btn) btn.disabled = false;
-        if (r.status === 429) return fail("Too many attempts. Please try again in a while or email gregor@swiss.ai.");
+        if (r.status === 429) return fail(m("429", "Too many attempts. Please try again in a while or email gregor@swiss.ai."));
         if (r.status === 401 || r.status === 403) {
           return fail(kind === "details"
-            ? "This link is invalid or has expired. Please request a new one on your page, or email gregor@swiss.ai."
-            : "Sorry, this request was not accepted. Please email gregor@swiss.ai.");
+            ? m("401_details", "This link is invalid or has expired. Please request a new one on your page, or email gregor@swiss.ai.")
+            : m("401_simple", "Sorry, this request was not accepted. Please email gregor@swiss.ai."));
         }
-        if (r.status === 400 || r.status === 422) return fail("Please check the required fields and the consent box.");
-        fail("Sorry, sending failed. Please email gregor@swiss.ai.");
+        if (r.status === 400 || r.status === 422) return fail(m("400", "Please check the required fields and the consent box."));
+        fail(m("fail", "Sorry, sending failed. Please email gregor@swiss.ai."));
       })
-      .catch(function () { if (btn) btn.disabled = false; fail("Sorry, sending failed. Please email gregor@swiss.ai."); });
+      .catch(function () { if (btn) btn.disabled = false; fail(m("fail", "Sorry, sending failed. Please email gregor@swiss.ai.")); });
   });
 })();

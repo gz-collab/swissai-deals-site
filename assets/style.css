@@ -41,8 +41,13 @@ form .btn{margin-top:20px}
 #form-status{margin-top:14px;font-weight:600}
 #form-status.ok{color:#1b7a3d}#form-status.err{color:var(--red)}
 .consent{font-size:.82rem;color:var(--muted);margin-top:14px}
-#privacy{font-size:.88rem;color:var(--muted)}
-#privacy h2{font-size:1.15rem}
+/* small print: full privacy notice under the footer, about 10 px, light grey */
+.smallprint{background:#fff;padding:14px 0 26px;font-size:10px;line-height:1.5;color:#a3abb8}
+.smallprint .wrap{max-width:900px}
+.smallprint h2{font-size:10px;font-weight:700;margin:0 0 4px;color:#a3abb8;letter-spacing:.02em}
+.smallprint p{margin:0 0 5px;font-size:10px;color:#a3abb8}
+.smallprint strong{font-weight:600;color:#9aa2b0}
+.smallprint a{color:#8f98a8;text-decoration:underline;word-break:break-all}
 footer{background:var(--navy);color:#a9b8cf;padding:26px 0;font-size:.85rem}
 footer a{color:#fff}
 .ph{background:#fff3cd;color:#7a5b00;padding:0 4px;border-radius:3px;font-size:.85em}

@@ -6,8 +6,9 @@ a{color:var(--navy)}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 header.top{background:var(--navy);color:#fff}
 header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{font-weight:700;letter-spacing:.02em;font-size:1.15rem}
-.brand span{color:var(--red)}
+.brand{display:inline-flex;align-items:center;line-height:0}
+.brand img{display:block;height:25px;width:auto}
+.flogo-row{margin-bottom:10px;line-height:0}.flogo-row img{display:block;height:15px;width:auto;opacity:.9}
 .btn{display:inline-block;background:var(--red);color:#fff!important;text-decoration:none;font-weight:600;padding:14px 28px;border-radius:6px;border:0;cursor:pointer;font-size:1rem;transition:background .15s}
 .btn:hover{background:var(--red-dark)}
 .btn.small{padding:8px 16px;font-size:.9rem}
@@ -43,6 +44,7 @@ form .btn{margin-top:20px}
 #privacy{font-size:.88rem;color:var(--muted)}
 #privacy h2{font-size:1.15rem}
 footer{background:var(--navy);color:#a9b8cf;padding:26px 0;font-size:.85rem}
+footer a{color:#fff}
 .ph{background:#fff3cd;color:#7a5b00;padding:0 4px;border-radius:3px;font-size:.85em}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding:32px 0 44px}.btn{width:100%;text-align:center}.btn.small{width:auto}}
 .hero.slim{padding:36px 0 40px}

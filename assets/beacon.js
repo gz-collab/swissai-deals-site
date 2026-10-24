@@ -1,12 +1,16 @@
 /* Privacy-friendly beacon: no cookies, no localStorage, nothing stored client-side.
-   Sends {s: slug, e: event, p?: pct, src?} as text/plain JSON to the Worker /event. Disabled when beacon_endpoint is empty.
-   Events: view (page_view), details_view, click_assess*, video_play, video_pct (25/50/75/100 via Bunny's player.js protocol). */
+   Sends {s: slug, e: event, p?: pct, src?, v?} as text/plain JSON to the Worker /event. Disabled when beacon_endpoint is empty.
+   src = mail id from ?e=E1|E2|E3, v = subject-test variant from ?v=A|B|C (both come from the link in the email).
+   Events: view (page_view), engaged (first scroll/click/key/touch: separates people from mail scanners), details_view, click_assess*,
+   video_play, video_pct (25/50/75/100 via Bunny's player.js protocol). */
 (function () {
   var cfg = window.__LANDING__ || {};
   if (!cfg.beacon) return;
-  var src = (new URLSearchParams(location.search).get("e") || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 8);
+  var qs = new URLSearchParams(location.search);
+  var src = (qs.get("e") || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 8);
+  var variant = (qs.get("v") || "").replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase();
   function send(ev, pct) {
-    var o = { s: cfg.slug, e: ev, t: Math.floor(Date.now() / 60000), src: src };
+    var o = { s: cfg.slug, e: ev, t: Math.floor(Date.now() / 60000), src: src, v: variant };
     if (pct) o.p = pct;
     var body = JSON.stringify(o);
     try {
@@ -20,6 +24,16 @@
     if (el) send(el.getAttribute("data-beacon"));
   });
   window.__beacon = send;
+
+  // "engaged": one event on the first sign of a human (pointer, scroll, key, touch). Mail scanners that render the page never do this.
+  var engaged = false;
+  function engage() {
+    if (engaged) return;
+    engaged = true;
+    ["pointerdown", "mousemove", "scroll", "keydown", "touchstart", "wheel"].forEach(function (n) { window.removeEventListener(n, engage, true); });
+    send("engaged");
+  }
+  ["pointerdown", "mousemove", "scroll", "keydown", "touchstart", "wheel"].forEach(function (n) { window.addEventListener(n, engage, { capture: true, passive: true }); });
 
   // Video events from the Bunny iframe (player.js protocol). Each milestone is sent once per page load.
   var frame = document.getElementById("player");

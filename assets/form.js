@@ -11,6 +11,10 @@
     document.getElementById("f-token").value = tok;
     if (!tok) document.getElementById("token-note").hidden = false;
   }
+  if (kind !== "details") { // subject-test variant from the email link (?v=A|B|C) travels with the lead for attribution
+    var v = (new URLSearchParams(location.search).get("v") || "").replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase();
+    if (v) { var hv = document.createElement("input"); hv.type = "hidden"; hv.name = "variant"; hv.value = v; f.appendChild(hv); }
+  }
   function fail(msg) { st.className = "err"; st.textContent = msg; }
   f.addEventListener("submit", function (ev) {
     ev.preventDefault();
